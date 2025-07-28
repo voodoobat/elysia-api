@@ -1,0 +1,15 @@
+# deps
+node_modules/
+
+# build
+server
+
+# rest-client
+rest-client.http
+
+# db
+db.sqlite
+db.sqlite-*
+
+# env
+.env
