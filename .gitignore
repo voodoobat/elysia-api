@@ -11,5 +11,8 @@ rest-client.http
 db.sqlite
 db.sqlite-*
 
+# prisma
+/src/db/generated
+
 # env
 .env
