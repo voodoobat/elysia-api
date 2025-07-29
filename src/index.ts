@@ -1,8 +1,10 @@
-import { Elysia } from 'elysia'
+import Elysia from 'elysia'
+import auth from '@/modules/auth/auth.controller'
 import user from '@/modules/user/user.controller'
 
 const app = new Elysia()
   .get('/', () => 'Hello Elysia')
+  .use(auth)
   .use(user)
   .listen(3000)
 

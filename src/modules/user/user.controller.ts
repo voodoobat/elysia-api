@@ -1,9 +1,10 @@
-import Elysia, { NotFoundError } from 'elysia'
+import Elysia from 'elysia'
 import service from './user.service'
 import model from './user.model'
 
 export default new Elysia({ prefix: '/user' })
   .model(model)
+
   .post(
     '/',
     async ({ body, set }) => {
@@ -18,6 +19,7 @@ export default new Elysia({ prefix: '/user' })
       },
     },
   )
+
   .get(
     '/',
     async () => {
@@ -29,14 +31,11 @@ export default new Elysia({ prefix: '/user' })
       },
     },
   )
+
   .get(
     '/:id',
     async ({ params: { id } }) => {
-      const user = await service.findOne(id)
-
-      if (!user) {
-        throw new NotFoundError('User not found')
-      }
+      const user = await service.findOne({ id })
 
       return user
     },
@@ -47,10 +46,11 @@ export default new Elysia({ prefix: '/user' })
       },
     },
   )
+
   .patch(
     '/:id',
     async ({ body, params: { id } }) => {
-      return await service.update(id, body)
+      return await service.update({ id }, body)
     },
     {
       body: 'user.body.partial',
@@ -60,10 +60,11 @@ export default new Elysia({ prefix: '/user' })
       },
     },
   )
+
   .delete(
     '/:id',
     async ({ params: { id } }) => {
-      return await service.delete(id)
+      return await service.delete({ id })
     },
     {
       params: 'user.params',

@@ -3,8 +3,9 @@ import { treaty } from '@elysiajs/eden'
 import { faker as f } from '@faker-js/faker'
 import { App } from '@/index'
 
-const api = treaty<App>(`localhost:${Bun.env.SERVER_PORT ?? 3000}`)
+import './user.controller' // for watch
 
+const api = treaty<App>(`localhost:${Bun.env.SERVER_PORT ?? 3000}`)
 const email = f.internet.email()
 const password = f.internet.password()
 
