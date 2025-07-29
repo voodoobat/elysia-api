@@ -1,9 +1,11 @@
 import Elysia from 'elysia'
+import swagger from '@elysiajs/swagger'
 import auth from '@/modules/auth/auth.controller'
 import user from '@/modules/user/user.controller'
 
 const app = new Elysia()
-  .get('/', () => 'Hello Elysia')
+  .use(swagger())
+  .get('/', ({ redirect }) => redirect('/swagger'))
   .use(auth)
   .use(user)
   .listen(3000)
