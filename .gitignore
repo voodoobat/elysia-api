@@ -8,8 +8,8 @@ server
 rest-client.http
 
 # db
-db.sqlite
-db.sqlite-*
+*.sqlite
+*.sqlite-*
 
 # prisma
 /src/db/generated
