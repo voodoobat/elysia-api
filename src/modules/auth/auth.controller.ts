@@ -7,8 +7,9 @@ export default new Elysia({ prefix: '/auth' })
 
   .post(
     '/login',
-    async ({ body }) => {
-      return await service.sign(body)
+    async ({ body, request: { headers } }) => {
+      const userAgent = headers.get('user-agent') ?? 'not detected'
+      return await service.sign(body, userAgent)
     },
     {
       body: 'auth.body',

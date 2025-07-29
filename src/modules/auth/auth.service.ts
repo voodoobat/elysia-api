@@ -4,7 +4,7 @@ import jwt from '@/util/jwt'
 import userService from '@/modules/user/user.service'
 
 export default {
-  async sign({ password, email }: Prisma.UserCreateInput) {
+  async sign({ password, email }: Prisma.UserCreateInput, userAgent: string) {
     const user = await userService.findOne({
       email,
     })
@@ -13,7 +13,7 @@ export default {
       throw new Error('Invalid credentials')
     }
 
-    const tokens = jwt.generate(user.id, 'web')
+    const tokens = jwt.generate(user.id, userAgent)
     await this.save(tokens.refreshToken, user.id)
 
     return tokens
@@ -23,7 +23,9 @@ export default {
     const payload = jwt.verify(refreshToken)
     const tokens = jwt.generate(payload.id, userAgent)
 
-    await this.save(tokens.refreshToken, payload.id)
+    await this.delete(refreshToken) // delete old token
+    await this.save(tokens.refreshToken, payload.id) // create entity with a new token
+
     return tokens
   },
 
