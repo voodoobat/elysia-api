@@ -6,7 +6,7 @@ import { App } from '@/index'
 import './auth.controller' // for watch
 
 const api = treaty<App>(`localhost:${Bun.env.SERVER_PORT ?? 3000}`)
-const email = f.internet.email()
+const email = `test_${f.internet.email()}`
 const password = f.internet.password()
 
 let userId = ''

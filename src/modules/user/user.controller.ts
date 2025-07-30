@@ -1,21 +1,21 @@
 import Elysia from 'elysia'
+import { authGuard } from '@/modules/auth/auth.guard'
 import service from './user.service'
 import model from './user.model'
 
 export default new Elysia({ prefix: '/user' })
   .model(model)
+  .use(authGuard)
 
   .post(
     '/',
-    async ({ body, set }) => {
-      set.status = 201
+    async ({ body }) => {
       return await service.create(body)
     },
     {
       body: 'user.body',
       response: {
-        201: 'user.response',
-        200: 'user.response', // for treaty (@elysiajs/eden)
+        200: 'user.response',
       },
     },
   )
@@ -23,7 +23,7 @@ export default new Elysia({ prefix: '/user' })
   .get(
     '/',
     async () => {
-      return await service.findMany()
+      return await service.find()
     },
     {
       response: {
@@ -35,9 +35,7 @@ export default new Elysia({ prefix: '/user' })
   .get(
     '/:id',
     async ({ params: { id } }) => {
-      const user = await service.findOne({ id })
-
-      return user
+      return await service.findOne({ id })
     },
     {
       params: 'user.params',
@@ -49,7 +47,11 @@ export default new Elysia({ prefix: '/user' })
 
   .patch(
     '/:id',
-    async ({ body, params: { id } }) => {
+    async ({ body, params: { id }, user }) => {
+      if (!user.is(id)) {
+        throw new Error('Unauthorized')
+      }
+
       return await service.update({ id }, body)
     },
     {
@@ -63,7 +65,11 @@ export default new Elysia({ prefix: '/user' })
 
   .delete(
     '/:id',
-    async ({ params: { id } }) => {
+    async ({ params: { id }, user }) => {
+      if (!user.is(id)) {
+        throw new Error('Unauthorized')
+      }
+
       return await service.delete({ id })
     },
     {

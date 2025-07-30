@@ -1,7 +1,7 @@
 import Elysia from 'elysia'
 import swagger from '@elysiajs/swagger'
-import auth from '@/modules/auth/auth.controller'
-import user from '@/modules/user/user.controller'
+import auth from './modules/auth/auth.controller'
+import user from './modules/user/user.controller'
 
 const app = new Elysia()
   .use(swagger())

@@ -6,10 +6,11 @@ import { App } from '@/index'
 import './user.controller' // for watch
 
 const api = treaty<App>(`localhost:${Bun.env.SERVER_PORT ?? 3000}`)
-const email = f.internet.email()
+
+const email = `test_${f.internet.email()}`
 const password = f.internet.password()
 
-let userId = ''
+let userId: string
 
 describe('user module', async () => {
   it('should create a user', async () => {
@@ -20,7 +21,7 @@ describe('user module', async () => {
 
     userId = user?.id ?? ''
 
-    expect(status).toBe(201)
+    expect(status).toBe(200)
     expect(user?.id).toBeString()
     expect(user?.id?.length).toBe(36) // uuid len
     expect(user?.email).toEqual(email)
@@ -45,7 +46,7 @@ describe('user module', async () => {
   })
 
   it('should get a user', async () => {
-    const { data: user, status } = await api.user({ id: userId }).get()
+    const { data: user, status } = await api.user({ id: userId }).get({})
 
     expect(status).toBe(200)
     expect(user?.id).toBeString()
@@ -56,13 +57,59 @@ describe('user module', async () => {
   })
 
   it('should update a user', async () => {
-    const username = f.internet.username()
-    const email = f.internet.email()
+    const creadentionals = {
+      email: `test_${f.internet.email()}`,
+      password: f.internet.password(),
+    }
 
-    const { data: user, status } = await api.user({ id: userId }).patch({
-      username,
+    const updated = {
+      email: `test_${f.internet.email()}`,
+      password: f.internet.password(),
+      username: f.internet.username(),
+    }
+
+    const { data: created } = await api.user.post(creadentionals)
+    const { data: tokens } = await api.auth.login.post(creadentionals)
+    const { data: user, status } = await api
+      .user({ id: created?.id ?? '' })
+      .patch(updated, {
+        headers: {
+          authorization: `Bearer ${tokens?.accessToken}`,
+        },
+      })
+
+    expect(status).toBe(200)
+    expect(user?.id).toBeString()
+    expect(user?.id.length).toBe(36) // uuid len
+    expect(user?.createdAt).toBeString()
+    expect(user?.updatedAt).toBeString()
+    expect(user?.email).toEqual(updated.email)
+    expect(user?.username).toEqual(updated.username)
+
+    await api.user({ id: userId }).delete(
+      {},
+      {
+        headers: {
+          authorization: `Bearer ${tokens?.accessToken}`,
+        },
+      },
+    )
+  })
+
+  it('should delete a user', async () => {
+    const { data } = await api.auth.login.post({
       email,
+      password,
     })
+
+    const { data: user, status } = await api.user({ id: userId }).delete(
+      {},
+      {
+        headers: {
+          authorization: `Bearer ${data?.accessToken}`,
+        },
+      },
+    )
 
     expect(status).toBe(200)
     expect(user?.id).toBeString()
@@ -70,12 +117,5 @@ describe('user module', async () => {
     expect(user?.createdAt).toBeString()
     expect(user?.updatedAt).toBeString()
     expect(user?.email).toEqual(email)
-    expect(user?.username).toEqual(username)
-  })
-
-  it('should delete a user', async () => {
-    const user = await api.user({ id: userId }).delete()
-
-    expect(user.data?.id).toEqual(userId)
   })
 })

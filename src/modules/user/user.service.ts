@@ -1,4 +1,3 @@
-import { NotFoundError } from 'elysia'
 import db from '@/db'
 import { Prisma } from '@/db/generated'
 
@@ -12,20 +11,14 @@ export default {
     })
   },
 
-  async findMany() {
+  async find() {
     return await db.user.findMany()
   },
 
   async findOne(where: Prisma.UserWhereUniqueInput) {
-    const user = await db.user.findUnique({
+    return await db.user.findUniqueOrThrow({
       where,
     })
-
-    if (!user) {
-      throw new NotFoundError('User not found')
-    }
-
-    return user
   },
 
   async update(

@@ -29,14 +29,6 @@ export default {
     return tokens
   },
 
-  async delete(refreshToken: string) {
-    await db.auth.delete({
-      where: {
-        token: refreshToken,
-      },
-    })
-  },
-
   async save(refreshToken: string, userId: string) {
     await db.auth.create({
       data: {
@@ -44,6 +36,14 @@ export default {
         user: {
           connect: { id: userId },
         },
+      },
+    })
+  },
+
+  async delete(refreshToken: string) {
+    await db.auth.delete({
+      where: {
+        token: refreshToken,
       },
     })
   },
