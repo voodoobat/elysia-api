@@ -1,5 +1,5 @@
 import Elysia from 'elysia'
-import { authGuard } from '@/modules/auth/auth.guard'
+import authGuard from '@/modules/auth/auth.guard'
 import service from './user.service'
 import model from './user.model'
 
