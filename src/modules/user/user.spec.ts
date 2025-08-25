@@ -57,7 +57,7 @@ describe('user module', async () => {
   })
 
   it('should update a user', async () => {
-    const creadentionals = {
+    const credentials = {
       email: `test_${f.internet.email()}`,
       password: f.internet.password(),
     }
@@ -68,8 +68,8 @@ describe('user module', async () => {
       username: f.internet.username(),
     }
 
-    const { data: created } = await api.user.post(creadentionals)
-    const { data: tokens } = await api.auth.login.post(creadentionals)
+    const { data: created } = await api.user.post(credentials)
+    const { data: tokens } = await api.auth.login.post(credentials)
     const { data: user, status } = await api
       .user({ id: created?.id ?? '' })
       .patch(updated, {
