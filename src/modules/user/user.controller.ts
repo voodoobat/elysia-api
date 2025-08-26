@@ -1,4 +1,5 @@
 import Elysia from 'elysia'
+import { ForbiddenError } from '@/lib/errors/http'
 import authGuard from '@/modules/auth/auth.guard'
 import service from './user.service'
 import model from './user.model'
@@ -49,7 +50,7 @@ export default new Elysia({ prefix: '/user' })
     '/:id',
     async ({ body, params: { id }, user }) => {
       if (!user.is(id)) {
-        throw new Error('Unauthorized')
+        throw new ForbiddenError('Forbidden')
       }
 
       return await service.update({ id }, body)
@@ -67,7 +68,7 @@ export default new Elysia({ prefix: '/user' })
     '/:id',
     async ({ params: { id }, user }) => {
       if (!user.is(id)) {
-        throw new Error('Unauthorized')
+        throw new ForbiddenError('Forbidden')
       }
 
       return await service.delete({ id })
