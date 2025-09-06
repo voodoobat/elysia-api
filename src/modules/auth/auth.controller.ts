@@ -1,5 +1,5 @@
 import Elysia from 'elysia'
-import service from './auth.service'
+import $auth from './auth.service'
 import model from './auth.model'
 
 export default new Elysia({ prefix: '/auth' })
@@ -9,7 +9,7 @@ export default new Elysia({ prefix: '/auth' })
     '/login',
     async ({ body, request: { headers } }) => {
       const userAgent = headers.get('user-agent') ?? 'not detected'
-      return await service.sign(body, userAgent)
+      return await $auth.sign(body, userAgent)
     },
     {
       body: 'auth.body',
@@ -23,7 +23,7 @@ export default new Elysia({ prefix: '/auth' })
     '/refresh',
     ({ body, request: { headers } }) => {
       const userAgent = headers.get('user-agent') ?? 'not detected'
-      return service.refresh(body.refreshToken, userAgent)
+      return $auth.refresh(body.refreshToken, userAgent)
     },
     {
       body: 'auth.body.refresh',
@@ -36,7 +36,7 @@ export default new Elysia({ prefix: '/auth' })
   .post(
     '/logout',
     async ({ body, set }) => {
-      await service.delete(body.refreshToken)
+      await $auth.delete(body.refreshToken)
       set.status = 204
     },
     {

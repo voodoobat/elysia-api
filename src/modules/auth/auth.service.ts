@@ -1,11 +1,11 @@
 import db from '@/db'
 import { Prisma } from '@/db/generated'
 import jwt from '@/util/jwt'
-import userService from '@/modules/user/user.service'
+import $user from '@/modules/user/user.service'
 
 export default {
   async sign({ password, email }: Prisma.UserCreateInput, userAgent: string) {
-    const user = await userService.findOne({
+    const user = await $user.findOne({
       email,
     })
 

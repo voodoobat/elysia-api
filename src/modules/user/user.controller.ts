@@ -1,7 +1,7 @@
 import Elysia from 'elysia'
 import { ForbiddenError } from '@/lib/errors/http'
 import authGuard from '@/modules/auth/auth.guard'
-import service from './user.service'
+import $user from './user.service'
 import model from './user.model'
 
 export default new Elysia({ prefix: '/user' })
@@ -11,7 +11,7 @@ export default new Elysia({ prefix: '/user' })
   .post(
     '/',
     async ({ body }) => {
-      return await service.create(body)
+      return await $user.create(body)
     },
     {
       body: 'user.body',
@@ -24,7 +24,7 @@ export default new Elysia({ prefix: '/user' })
   .get(
     '/',
     async () => {
-      return await service.find()
+      return await $user.find()
     },
     {
       response: {
@@ -36,7 +36,7 @@ export default new Elysia({ prefix: '/user' })
   .get(
     '/:id',
     async ({ params: { id } }) => {
-      return await service.findOne({ id })
+      return await $user.findOne({ id })
     },
     {
       params: 'user.params',
@@ -53,7 +53,7 @@ export default new Elysia({ prefix: '/user' })
         throw new ForbiddenError('Forbidden')
       }
 
-      return await service.update({ id }, body)
+      return await $user.update({ id }, body)
     },
     {
       body: 'user.body.partial',
@@ -71,7 +71,7 @@ export default new Elysia({ prefix: '/user' })
         throw new ForbiddenError('Forbidden')
       }
 
-      return await service.delete({ id })
+      return await $user.delete({ id })
     },
     {
       params: 'user.params',
